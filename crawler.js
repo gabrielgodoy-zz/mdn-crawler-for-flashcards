@@ -34,6 +34,7 @@ casper.then(function() {
 
 	casper.then(function() {
 		fs.write('data.json', JSON.stringify(resultLinks, null, 4), 'w');
+		this.echo('Data was retrieved and stored successfully', 'INFO');
 	});
 
 });
