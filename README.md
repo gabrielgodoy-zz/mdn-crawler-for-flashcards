@@ -1,4 +1,4 @@
-## Simple crawler with [CasperJS](http://docs.casperjs.org) on top or [SlimerJS](https://slimerjs.org/) or [PhantomJS](http://phantomjs.org/)
+## Simple crawler with [CasperJS](http://docs.casperjs.org) on top of [SlimerJS](https://slimerjs.org/) or [PhantomJS](http://phantomjs.org/)
 
 There is a demo in `crawler.js` showing how to do a search on google and get all links from the first page of search results, and write on a json file.
 
