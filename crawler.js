@@ -1,42 +1,50 @@
-var fs = require('fs'), // PhantomJS File System module
-	casper = require('casper').create();
+var fs = require('fs'),
+	resultLinks,
+	casper = require('./basicCasper'),
+	URL = 'https://developer.mozilla.org/en-US/docs/Web/SVG/Element';
 
-// Listens for logs in Page context
-casper.on('remote.message', function(msg) {
-	console.log('Message from the page context: ' + msg);
-});
-
-var URL = 'https://www.google.com',
-	searchTerm = 'jobs';
-
-casper.start(URL, function() {
-	this.echo('Page title: ' + this.getTitle(), 'INFO');
-}).thenEvaluate(function(term) {
-	document.querySelector('input[name="q"]').setAttribute('value', term);
-	document.querySelector('form[name="f"]').submit();
-}, searchTerm);
+casper.start(URL);
 
 casper.then(function() {
-	this.echo('You are now at: ' + this.getCurrentUrl(), 'INFO');
+	this.echo('You are at: ' + this.getCurrentUrl(), 'INFO');
 
-	var resultLinks = casper.evaluate(function() {
-		var links = [];
+	resultLinks = casper.evaluate(function() {
+		var allReferences = document.querySelectorAll('.index ul'),
+			linksArray = [];
 
-		[].forEach.call(document.querySelectorAll('#ires ol .g'), function(result) {
-			links.push({
-				text: result.querySelector('h3.r').innerText,
-				link: result.querySelector('h3.r a').getAttribute('href')
+		[].forEach.call(allReferences, function(ul) {
+			[].forEach.call(ul.querySelectorAll('li a'), function(link) {
+				var hasDocumentation = !link.getAttribute('class');
+				if (hasDocumentation) {
+					linksArray.push('https://developer.mozilla.org' + link.getAttribute('href'));
+				}
 			});
 		});
+		return linksArray;
+	});
+});
 
-		return links;
+casper.then(function() {
+	var dataDetails = [];
+
+	console.log('resultLinks', resultLinks);
+
+	casper.each(resultLinks, function(self, link) {
+		self.thenOpen(link, function() {
+			var newData = self.evaluate(function() {
+				var topic = document.querySelector('h1').innerText,
+					summary = document.querySelector('#wikiArticle > p').innerText;
+				return topic + '|' + summary;
+			});
+			self.echo('Got data for the tag: ' + newData.split('|')[0], 'INFO');
+			dataDetails.push(newData);
+		});
 	});
 
 	casper.then(function() {
-		fs.write('data.json', JSON.stringify(resultLinks, null, 4), 'w');
-		this.echo('Data was retrieved and stored successfully', 'INFO');
+		var dataFormatted = dataDetails.join('\n');
+		fs.write('data.txt', dataFormatted);
 	});
-
 });
 
 casper.run();

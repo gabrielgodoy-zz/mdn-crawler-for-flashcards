@@ -1,14 +1,14 @@
-## Simple crawler with [CasperJS](http://docs.casperjs.org) on top of [SlimerJS](https://slimerjs.org/) or [PhantomJS](http://phantomjs.org/)
+## Flash cards creator of MDN SVG Tags Reference
 
-There is a demo in `crawler.js` showing how to do a search on google and get all links from the first page of search results, and write on a json file.
+Creates data.txt file to be imported in [Quizlet](https://quizlet.com) for the creation of flash card sets
 
-### Difference of SlimerJS and PhantomJS
+Structure of created data:
 
-- PhantomJS
-Headless browser that uses Webkit engine, same as Chrome
-
-- SlimerJS
-Almost headless browser that uses Gecko engine, same as Firefox
+```
+Word 1|Definition 1
+Word 2|Definition 2
+Word 3|Definition 3
+```
 
 ### Install
 `npm i casperjs slimerjs phantomjs-prebuilt -g`
