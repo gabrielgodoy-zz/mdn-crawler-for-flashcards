@@ -27,8 +27,6 @@ casper.then(function() {
 casper.then(function() {
 	var dataDetails = [];
 
-	console.log('resultLinks', resultLinks);
-
 	casper.each(resultLinks, function(self, link) {
 		self.thenOpen(link, function() {
 			var newData = self.evaluate(function() {
